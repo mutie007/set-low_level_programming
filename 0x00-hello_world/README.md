@@ -16,3 +16,13 @@ For Shell Scripts
 All your scripts should be exactly two lines long ($ wc -l file should print 2)
 The first line of all your files should be exactly #!/bin/bash
 All your file should be executable: chmod u+x file
+
+## 2-assembler
+
+This script generates the assembly code (`.s` file) from the C source file stored in the `$CFILE` environment variable.
+
+### Usage:
+```bash
+export CFILE=main.c
+./2-assembler
+
