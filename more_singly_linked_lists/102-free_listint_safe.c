@@ -3,20 +3,24 @@
 
 /**
  * free_listint_safe - frees a listint_t list (safe version)
- * @h: pointer to the pointer of the head of the list
+ * @h: double pointer to the head of the list
  *
  * Return: the size of the list that was free'd
  */
 size_t free_listint_safe(listint_t **h)
 {
-	listint_t *current, *tmp;
+	listint_t *current;
+	listint_t *tmp;
 	listint_t **addrs;
-	size_t i, count = 0;
-	size_t size = 10;
+	size_t i;
+	size_t count;
+	size_t size;
 
 	if (h == NULL || *h == NULL)
 		return (0);
 
+	size = 10;
+	count = 0;
 	addrs = malloc(sizeof(listint_t *) * size);
 	if (addrs == NULL)
 		exit(98);
