@@ -1,5 +1,4 @@
 #include "lists.h"
-#include <stdlib.h>
 
 /**
  * free_listint_safe - frees a listint_t list (safe version)
@@ -9,51 +8,32 @@
  */
 size_t free_listint_safe(listint_t **h)
 {
-	listint_t *current;
-	listint_t *tmp;
-	listint_t **addrs;
-	size_t i;
-	size_t count;
-	size_t size;
+	size_t len = 0;
+	int diff;
+	listint_t *temp;
 
-	if (h == NULL || *h == NULL)
+	if (!h || !*h)
 		return (0);
 
-	size = 10;
-	count = 0;
-	addrs = malloc(sizeof(listint_t *) * size);
-	if (addrs == NULL)
-		exit(98);
-
-	current = *h;
-	while (current != NULL)
+	while (*h)
 	{
-		for (i = 0; i < count; i++)
+		diff = *h - (*h)->next;
+		if (diff > 0)
 		{
-			if (current == addrs[i])
-			{
-				*h = NULL;
-				free(addrs);
-				return (count);
-			}
+			temp = (*h)->next;
+			free(*h);
+			*h = temp;
+			len++;
 		}
-
-		if (count == size)
+		else
 		{
-			size *= 2;
-			addrs = realloc(addrs, sizeof(listint_t *) * size);
-			if (addrs == NULL)
-				exit(98);
+			free(*h);
+			*h = NULL;
+			len++;
+			break;
 		}
-
-		addrs[count] = current;
-		tmp = current->next;
-		free(current);
-		current = tmp;
-		count++;
 	}
 
 	*h = NULL;
-	free(addrs);
-	return (count);
+	return (len);
 }
