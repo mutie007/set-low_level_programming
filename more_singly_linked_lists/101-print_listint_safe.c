@@ -3,6 +3,29 @@
 #include "lists.h"
 
 /**
+ * is_looped - checks if a node was already visited
+ * @visited: array of visited node pointers
+ * @count: number of visited nodes
+ * @node: node to check
+ *
+ * Return: 1 if looped, 0 otherwise
+ */
+static int is_looped(const listint_t **visited, size_t count,
+		const listint_t *node)
+{
+	size_t i;
+
+	i = 0;
+	while (i < count)
+	{
+		if (visited[i] == node)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+/**
  * print_listint_safe - prints a listint_t linked list safely
  * @head: pointer to head of list
  *
@@ -10,49 +33,39 @@
  */
 size_t print_listint_safe(const listint_t *head)
 {
+	const listint_t **visited;
+	const listint_t *current;
 	size_t count;
-	size_t loop_pos;
-	const listint_t *slow;
-	const listint_t *fast;
-	const listint_t *start;
+	size_t size;
 
 	if (head == NULL)
 		return (0);
-	slow = head;
-	fast = head;
-	while (fast != NULL && fast->next != NULL)
+	size = 1024;
+	visited = malloc(sizeof(listint_t *) * size);
+	if (visited == NULL)
+		exit(98);
+	count = 0;
+	current = head;
+	while (current != NULL)
 	{
-		slow = slow->next;
-		fast = fast->next->next;
-		if (slow == fast)
+		if (is_looped(visited, count, current))
 		{
-			start = head;
-			loop_pos = 0;
-			while (start != slow)
-			{
-				start = start->next;
-				slow = slow->next;
-				loop_pos++;
-			}
-			count = 0;
-			start = head;
-			while (count < loop_pos)
-			{
-				printf("[%p] %d\n", (void *)start, start->n);
-				start = start->next;
-				count++;
-			}
-			printf("-> [%p] %d\n", (void *)start, start->n);
+			printf("-> [%p] %d\n", (void *)current, current->n);
+			free(visited);
 			exit(98);
 		}
-	}
-	count = 0;
-	start = head;
-	while (start != NULL)
-	{
-		printf("[%p] %d\n", (void *)start, start->n);
-		start = start->next;
+		if (count >= size)
+		{
+			size *= 2;
+			visited = realloc(visited, sizeof(listint_t *) * size);
+			if (visited == NULL)
+				exit(98);
+		}
+		visited[count] = current;
+		printf("[%p] %d\n", (void *)current, current->n);
 		count++;
+		current = current->next;
 	}
+	free(visited);
 	return (count);
 }
